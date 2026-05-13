@@ -7,10 +7,11 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 # Wait for pods to be ready
 kubectl wait --for=condition=Ready pods --all -n argocd --timeout=120s
 
-# Expose the ArgoCD UI
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+# Expose the ArgoCD UI in the background
+kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 
+# Kill the Process Later
+pkill -f "port-forward svc/argocd-server"
 
-
-$$$
-minikube service demo-app-svc
+# Retrieve the Admin Password
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
