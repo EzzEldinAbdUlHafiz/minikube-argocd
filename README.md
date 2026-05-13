@@ -7,8 +7,11 @@ kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubuse
 # Wait for pods to be ready
 kubectl wait --for=condition=Ready pods --all -n argocd --timeout=120s
 
-# Expose the ArgoCD UI in the background
+# Expose the ArgoCD UI (runs in the background)
 kubectl port-forward svc/argocd-server -n argocd 8080:443 &
+
+# Expose the ArgoCD UI (reach from the host machine)
+kubectl port-forward svc/argocd-server -n argocd --address 0.0.0.0 8080:443
 
 # Kill the Process Later
 pkill -f "port-forward svc/argocd-server"
